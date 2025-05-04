@@ -6,7 +6,7 @@ from PyPDF2 import PdfReader
 import torch
 from PIL import Image
 from tqdm import tqdm
-# from transformers import MllamaForConditionalGeneration, AutoProcessor
+from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 import transformers
 import argparse
 import openai
