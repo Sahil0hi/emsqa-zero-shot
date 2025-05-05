@@ -1,0 +1,15 @@
+name: emsqa-env
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - numpy
+  - scikit-learn
+  - tqdm
+  - pip:
+      - torch
+      - transformers
+      - accelerate
+      - sentencepiece

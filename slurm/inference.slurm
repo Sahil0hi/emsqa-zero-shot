@@ -9,7 +9,12 @@
 #SBATCH -t 24:00:00
 module purge
 module load minforge
-source activate your_env
+source ~/.bashrc
+conda activate emsqa-env
+echo "Using Python: $(which python)"
+nvidia-smi
 srun python inference/run_inference.py \
      --input  data/emr_open.json \
      --output inference/qwen2_5b_emr_output.json
+
+

@@ -18,7 +18,7 @@ parser.add_argument("--max_new_tokens", type=int, default=8,
 args = parser.parse_args()
 
 ##############################################################################
-#. Load Qwen‑2.5‑7B‑Chat ───────────────────────────────────────────────────
+#   Load Qwen‑2.5‑7B‑Chat ───────────────────────────────────────────────────
 print("Loading model …" )
 
 tokenizer = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)#model from arguemt, defualt is Qwen/Qwen2.5-7B-Chat
