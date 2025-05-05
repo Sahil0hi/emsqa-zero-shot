@@ -41,3 +41,47 @@ gen = pipeline(
 
 answer_regex = re.compile(r"([A-D])", re.I) # matches a single letter A to D case-insensitively
 
+
+def qwen_ask(question: str, choices: list[str]) -> str:
+    prompt = ( "You are an expert EMR taking a certification practice test. \n\n"
+              "You are given a question and four possible answers. Your task is to select the best answer from the four options.  \n\n"
+              
+            f"Question:\n{question}\n\n"
+                f"Choices:\n"
+                f"A. {choices[0]}\n"
+                f"B. {choices[1]}\n"
+                f"C. {choices[2]}\n"
+                f"D. {choices[3]}\n\n"
+                "Answer (just one letter A, B, C, or D):"
+            )
+    completion = gen(prompt, max_new_tokens = args.max_new_tokens, do_sample = False, temperature = 0.0, eos_token_id=tokenizer.eos_token_id)[0]["generated_text"]
+
+    end = completion[len(prompt):]
+    match = answer_regex.search(end)
+    return match.group(1).upper() if match else "?"
+
+##############################################################################
+# Run inference over the dataset ──────────────────────────────────────────
+
+with open(args.input) as file:
+    emr = json.load(file)
+
+predictions = []
+start = time.time()
+for item in tqdm(emr, desc="Inferring"):
+    pred_letter = ask_qwen(item["Question"], item["Choices"])
+    predictions.append({
+        "question":        item["Question"],
+        "choices":         item["Choices"],
+        "true_answer":     item["Answer"],
+        "model_answer":    pred_letter
+    })
+elapsed = time.time() - start
+print(f"\nFinished {len(predictions)} questions in {elapsed/60:.1f} min")
+
+##############################################################################
+# output JSON ───────────────────────────────────────────────────────
+os.makedirs(os.path.dirname(args.output), exist_ok=True)
+with open(args.output, "w") as file:
+    json.dump(predictions, file, indent=2)
+print(f"Wrote predictions → {args.output}")
