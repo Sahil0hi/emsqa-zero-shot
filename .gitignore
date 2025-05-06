@@ -1,6 +1,7 @@
 # Ignore EMSQA data
 *.json
 data/*.json
+logs/
 
 # Ignore Python cache
 __pycache__/
